@@ -1,13 +1,15 @@
 package gs.dice.diceroller.services;
 
 import gs.dice.diceroller.models.DieRoll;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class DiceRollService {
 
-    public DieRoll roll(DieRoll dieRoll) {
+    public DieRoll generateRolls(DieRoll dieRoll) {
         int numberOfRolls = dieRoll.getRollCount();
 
         List<Integer> rollResults = new ArrayList();

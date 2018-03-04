@@ -26,7 +26,7 @@ public class DiceRollServiceTest {
                 .rollCount(1)
                 .build();
 
-        DieRoll resultingDieRoll = diceRollService.roll(dieRoll);
+        DieRoll resultingDieRoll = diceRollService.generateRolls(dieRoll);
         assertThat(resultingDieRoll.getRollResults().size(), equalTo(1));
     }
 
@@ -39,7 +39,7 @@ public class DiceRollServiceTest {
                 .rollCount(numberOfRolls)
                 .build();
 
-        DieRoll resultingDieRoll = diceRollService.roll(dieRoll);
+        DieRoll resultingDieRoll = diceRollService.generateRolls(dieRoll);
         assertThat(resultingDieRoll.getRollResults().size(), equalTo(numberOfRolls));
     }
 }

@@ -1,16 +1,19 @@
 package gs.dice.diceroller.controllers;
 
+import gs.dice.diceroller.models.DieRoll;
+import gs.dice.diceroller.services.DiceRollService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,29 +21,39 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest
 public class DiceRollControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
+    @Mock
+    private DiceRollService diceRollService;
+
+    @InjectMocks
     private DiceRollController diceRollController;
 
     @Before
     public void setup() {
-        diceRollController = new DiceRollController();
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(diceRollController).build();
     }
 
     @Test
-    public void post_receivesAValidCallToRollASingle6SidedDie_returnsSingleResult() throws Exception {
+    public void post_receivesAValidCallToRollASingleDie_returnsSuccessfulResponseStatus() throws Exception {
+        int dieType = 6;
+        int rollCount = 1;
+
+        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+
         mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidSingleDieRollRequestBody(6)))
+                        .content(buildValidSingleDieRollRequestBody(dieType)))
                 .andExpect(status().isOk());
     }
 
@@ -56,6 +69,10 @@ public class DiceRollControllerTest {
     @Test
     public void post_receivesAValidRequestToRollASingleTypeOfDie_returnsResponseWithTheDieType() throws Exception {
         int dieType = 6;
+        int rollCount = 1;
+
+        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+
         String expectedResponse = "\"dieType\": " + dieType;
 
         MvcResult result = mockMvc.perform(
@@ -70,12 +87,17 @@ public class DiceRollControllerTest {
 
     @Test
     public void post_receivesAValidRequestForMultipleRollsOfASingleDieType_returnsRollResultsAsAList() throws Exception {
+        int dieType = 6;
+        int rollCount = 2;
+
+        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+
         String rollResultsPattern = ".*\"results\":\\s\\[[\\d,\\s]*].*";
 
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidMultiDieRollRequestBody(6, 2)))
+                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -84,7 +106,10 @@ public class DiceRollControllerTest {
 
     @Test
     public void post_receivesAValidRequestForMultipleRollsOfASingleDieType_returnsCorrectNumberOfRollResults() throws Exception {
-        int numberOfRolls = 2;
+        int dieType = 6;
+        int rollCount = 2;
+
+        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
 
         String rollResultsSegmentPattern = "\"results\":\\s\\[[\\d,\\s]*]";
         String rollResultsPattern = "\\[.*\\]";
@@ -95,7 +120,7 @@ public class DiceRollControllerTest {
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidMultiDieRollRequestBody(6, numberOfRolls)))
+                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -106,7 +131,23 @@ public class DiceRollControllerTest {
         rollResultsMatcher.find();
         String rollResults = rollResultsMatcher.group(0).replaceAll("\\[", "").replaceAll("\\]", "");
 
-        assertThat(rollResults.split(",").length, equalTo(numberOfRolls));
+        assertThat(rollResults.split(",").length, equalTo(rollCount));
+    }
+
+    @Test
+    public void controllerCallsTheServiceToPerformDiceRolls() throws Exception {
+        int dieType = 6;
+        int rollCount = 1;
+
+        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+
+        mockMvc.perform(
+                post("/roll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(buildValidSingleDieRollRequestBody(dieType)))
+                .andExpect(status().isOk());
+
+        verify(diceRollService).generateRolls(any());
     }
 
     private String buildValidSingleDieRollRequestBody(int dieType) {
@@ -127,5 +168,19 @@ public class DiceRollControllerTest {
         return "{" +
                 "\"rollCount\": 1" +
                 "}";
+    }
+
+    private DieRoll buildDieRollObject(int dieType, int rollCount) {
+        List<Integer> rolls = new ArrayList();
+
+        for (int count = 0; count < rollCount; count++) {
+            rolls.add(1);
+        }
+
+        return DieRoll.builder()
+                .dieType(dieType)
+                .rollCount(rollCount)
+                .rollResults(rolls)
+                .build();
     }
 }
