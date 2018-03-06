@@ -11,4 +11,8 @@ public class DiceRollStats {
 
         return (float)rollSummation / (float)numberOfRolls;
     }
+
+    public int determineRollsSum(List<Integer> rolls) {
+        return rolls.stream().mapToInt(roll -> roll).sum();
+    }
 }

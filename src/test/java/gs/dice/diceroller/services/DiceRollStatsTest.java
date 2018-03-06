@@ -38,4 +38,25 @@ public class DiceRollStatsTest {
 
         assertThat(meanOfRolls, equalTo(2F));
     }
+
+    @Test
+    public void givenAListThatContainsASingleRollResult_thenTheSumIsReportedBeingEqualToTheRoll() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(4);
+
+        int sumOfRolls = diceRollStats.determineRollsSum(rolls);
+
+        assertThat(sumOfRolls, equalTo(4));
+    }
+
+    @Test
+    public void givenAListOfMoreThanOneRollResult_thenTheSumOfTheRollResultsIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(2);
+        rolls.add(3);
+
+        int sumOfRolls = diceRollStats.determineRollsSum(rolls);
+
+        assertThat(sumOfRolls, equalTo(5));
+    }
 }
