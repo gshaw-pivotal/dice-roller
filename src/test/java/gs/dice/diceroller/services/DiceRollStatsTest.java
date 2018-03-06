@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DiceRollStatsTest {
 
@@ -58,5 +58,47 @@ public class DiceRollStatsTest {
         int sumOfRolls = diceRollStats.determineRollsSum(rolls);
 
         assertThat(sumOfRolls, equalTo(5));
+    }
+
+    @Test
+    public void givenAListThatContainsASingleRollResult_thenTheMaxIsReportedBeingEqualToTheRoll() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(6);
+
+        int maxRoll = diceRollStats.maxRoll(rolls);
+
+        assertThat(maxRoll, equalTo(6));
+    }
+
+    @Test
+    public void givenAListOfMoreThanOneRollResult_thenTheMaxOfTheRollResultsIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(5);
+        rolls.add(3);
+
+        int maxRoll = diceRollStats.maxRoll(rolls);
+
+        assertThat(maxRoll, equalTo(5));
+    }
+
+    @Test
+    public void givenAListThatContainsASingleRollResult_thenTheMinIsReportedBeingEqualToTheRoll() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(2);
+
+        int minRoll = diceRollStats.minRoll(rolls);
+
+        assertThat(minRoll, equalTo(2));
+    }
+
+    @Test
+    public void givenAListOfMoreThanOneRollResult_thenTheMinOfTheRollResultsIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(4);
+        rolls.add(2);
+
+        int minRoll = diceRollStats.minRoll(rolls);
+
+        assertThat(minRoll, equalTo(2));
     }
 }
