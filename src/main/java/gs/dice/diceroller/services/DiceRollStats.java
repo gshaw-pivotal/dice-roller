@@ -24,4 +24,14 @@ public class DiceRollStats {
     public int minRoll(List<Integer> rolls) {
         return Collections.min(rolls);
     }
+
+    public float determineRollsMedian(List<Integer> rolls) {
+        if (rolls.size() % 2  == 0) {
+            int lowIndex = rolls.size() / 2;
+            return (float)(rolls.get(lowIndex) + rolls.get(lowIndex - 1)) / (float)2;
+        } else {
+            int medianIndex = rolls.size() / 2;
+            return rolls.get(medianIndex);
+        }
+    }
 }

@@ -101,4 +101,39 @@ public class DiceRollStatsTest {
 
         assertThat(minRoll, equalTo(2));
     }
+
+    @Test
+    public void givenAListThatContainsASingleRollResult_thenTheMedianIsReportedBeingEqualToTheRoll() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(3);
+
+        float minRoll = diceRollStats.determineRollsMedian(rolls);
+
+        assertThat(minRoll, equalTo(3F));
+    }
+
+    @Test
+    public void givenAListThatContainsAnOrderedOddNumberOfRollResults_thenTheMedianIsReportedBeingEqualToTheMiddleRoll() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(3);
+        rolls.add(5);
+        rolls.add(6);
+
+        float minRoll = diceRollStats.determineRollsMedian(rolls);
+
+        assertThat(minRoll, equalTo(5F));
+    }
+
+    @Test
+    public void givenAListThatContainsAnOrderedEvenNumberOfRollResults_thenTheMedianIsReportedBeingEqualToTheSumOfTheTwoMiddleRolls() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(3);
+        rolls.add(4);
+        rolls.add(5);
+        rolls.add(6);
+
+        float minRoll = diceRollStats.determineRollsMedian(rolls);
+
+        assertThat(minRoll, equalTo(4.5F));
+    }
 }
