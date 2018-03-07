@@ -26,6 +26,7 @@ public class DiceRollStats {
     }
 
     public float determineRollsMedian(List<Integer> rolls) {
+        Collections.sort(rolls);
         if (rolls.size() % 2  == 0) {
             int lowIndex = rolls.size() / 2;
             return (float)(rolls.get(lowIndex) + rolls.get(lowIndex - 1)) / (float)2;
