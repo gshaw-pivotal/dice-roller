@@ -17,4 +17,6 @@ public class DieRoll {
     private Integer rollCount;
 
     private List<Integer> rollResults;
+
+    private DieRollStats dieRollStats;
 }

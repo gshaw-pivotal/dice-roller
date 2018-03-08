@@ -1,8 +1,11 @@
 package gs.dice.diceroller.services;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class DiceRollStats {
     public float determineRollsMean(List<Integer> rolls) {
 
