@@ -29,7 +29,7 @@ public class DiceRollStatsTest {
     }
 
     @Test
-    public void givenAListOfTwoRollResults_thenTheMeanIsReportedTheAverageOfTheTwoRolls() {
+    public void givenAListThatContainsAnOrderedEvenNumberOfRollResults_thenTheMeanIsReportedTheAverageOfTheRolls() {
         List<Integer> rolls = new ArrayList();
         rolls.add(1);
         rolls.add(3);
@@ -37,6 +37,19 @@ public class DiceRollStatsTest {
         float meanOfRolls = diceRollStats.determineRollsMean(rolls);
 
         assertThat(meanOfRolls, equalTo(2F));
+    }
+
+    @Test
+    public void givenAListThatContainsAnUnorderedEvenNumberOfRollResults_thenTheMeanIsReportedTheAverageOfTheRolls() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(4);
+        rolls.add(1);
+        rolls.add(5);
+        rolls.add(6);
+
+        float meanOfRolls = diceRollStats.determineRollsMean(rolls);
+
+        assertThat(meanOfRolls, equalTo(4F));
     }
 
     @Test

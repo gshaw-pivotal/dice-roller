@@ -8,7 +8,7 @@ public class DiceRollStats {
 
         int numberOfRolls = rolls.size();
 
-        int rollSummation = rolls.stream().mapToInt(roll -> roll).sum();
+        int rollSummation = determineRollsSum(rolls);
 
         return (float)rollSummation / (float)numberOfRolls;
     }
