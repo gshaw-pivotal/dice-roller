@@ -2,6 +2,7 @@ package gs.dice.diceroller.controllers;
 
 import gs.dice.diceroller.models.DieRoll;
 import gs.dice.diceroller.services.DiceRollService;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -14,10 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -73,8 +71,6 @@ public class DiceRollControllerTest {
 
         when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
 
-        String expectedResponse = "\"dieType\": " + dieType;
-
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +78,9 @@ public class DiceRollControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(result.getResponse().getContentAsString(), containsString(expectedResponse));
+        JSONObject jsonResponse = new JSONObject(result.getResponse().getContentAsString());
+
+        assertThat(jsonResponse.getInt("dieType"), equalTo(dieType));
     }
 
     @Test
@@ -92,7 +90,7 @@ public class DiceRollControllerTest {
 
         when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
 
-        String rollResultsPattern = ".*\"results\":\\s\\[[\\d,\\s]*].*";
+        String rollResultsPattern = "\\[[\\d,\\s]*]";
 
         MvcResult result = mockMvc.perform(
                 post("/roll")
@@ -101,7 +99,9 @@ public class DiceRollControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertTrue(result.getResponse().getContentAsString().matches(rollResultsPattern));
+        JSONObject jsonResponse = new JSONObject(result.getResponse().getContentAsString());
+
+        assertTrue(jsonResponse.get("rollResults").toString().matches(rollResultsPattern));
     }
 
     @Test
@@ -111,12 +111,6 @@ public class DiceRollControllerTest {
 
         when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
 
-        String rollResultsSegmentPattern = "\"results\":\\s\\[[\\d,\\s]*]";
-        String rollResultsPattern = "\\[.*\\]";
-
-        Pattern resultSegmentPattern = Pattern.compile(rollResultsSegmentPattern);
-        Pattern resultRollPattern = Pattern.compile(rollResultsPattern);
-
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,14 +118,8 @@ public class DiceRollControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        Matcher resultSegmentMatcher = resultSegmentPattern.matcher(result.getResponse().getContentAsString());
-        resultSegmentMatcher.find();
-
-        Matcher rollResultsMatcher = resultRollPattern.matcher(resultSegmentMatcher.group(0));
-        rollResultsMatcher.find();
-        String rollResults = rollResultsMatcher.group(0).replaceAll("\\[", "").replaceAll("\\]", "");
-
-        assertThat(rollResults.split(",").length, equalTo(rollCount));
+        JSONObject jsonResponse = new JSONObject(result.getResponse().getContentAsString());
+        assertThat(jsonResponse.getJSONArray("rollResults").length(), equalTo(rollCount));
     }
 
     @Test
