@@ -1,6 +1,7 @@
 package gs.dice.diceroller.controllers;
 
 import gs.dice.diceroller.models.DieRoll;
+import gs.dice.diceroller.models.DieRollStats;
 import gs.dice.diceroller.services.DiceRollService;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -16,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,6 +124,24 @@ public class DiceRollControllerTest {
     }
 
     @Test
+    public void post_receivesAValidRequestForASignleDieType_returnsAResponseThatContainsTheStats() throws Exception {
+        int dieType = 6;
+        int rollCount = 2;
+
+        when(diceRollService.generateRolls(any())).thenReturn(setRollStat(buildDieRollObject(dieType, rollCount)));
+
+        MvcResult result = mockMvc.perform(
+                post("/roll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject jsonResponse = new JSONObject(result.getResponse().getContentAsString());
+        assertThat(jsonResponse.getJSONObject("dieRollStats"), is(notNullValue()));
+    }
+
+    @Test
     public void controllerCallsTheServiceToPerformDiceRolls() throws Exception {
         int dieType = 6;
         int rollCount = 1;
@@ -170,5 +189,17 @@ public class DiceRollControllerTest {
                 .rollCount(rollCount)
                 .rollResults(rolls)
                 .build();
+    }
+
+    private DieRoll setRollStat(DieRoll dieRoll) {
+        DieRollStats stats = DieRollStats.builder()
+                .mean(1F)
+                .sum(2)
+                .median(1.5F)
+                .max(3)
+                .min(1)
+                .build();
+        dieRoll.setDieRollStats(stats);
+        return dieRoll;
     }
 }
