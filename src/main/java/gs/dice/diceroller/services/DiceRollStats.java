@@ -2,6 +2,7 @@ package gs.dice.diceroller.services;
 
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,13 +30,14 @@ public class DiceRollStats {
     }
 
     public float determineRollsMedian(List<Integer> rolls) {
-        Collections.sort(rolls);
-        if (rolls.size() % 2  == 0) {
-            int lowIndex = rolls.size() / 2;
-            return (float)(rolls.get(lowIndex) + rolls.get(lowIndex - 1)) / (float)2;
+        List<Integer> sortedRolls = new ArrayList(rolls);
+        Collections.sort(sortedRolls);
+        if (sortedRolls.size() % 2  == 0) {
+            int lowIndex = sortedRolls.size() / 2;
+            return (float)(sortedRolls.get(lowIndex) + sortedRolls.get(lowIndex - 1)) / (float)2;
         } else {
-            int medianIndex = rolls.size() / 2;
-            return rolls.get(medianIndex);
+            int medianIndex = sortedRolls.size() / 2;
+            return sortedRolls.get(medianIndex);
         }
     }
 }
