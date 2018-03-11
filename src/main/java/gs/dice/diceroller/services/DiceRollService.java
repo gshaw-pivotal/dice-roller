@@ -5,6 +5,7 @@ import gs.dice.diceroller.models.DieRollStats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class DiceRollService {
         List<Integer> rollResults = new ArrayList();
 
         for (int count = 0; count < numberOfRolls; count++) {
-            rollResults.add(roll());
+            rollResults.add(roll(1, dieRoll.getDieType()));
         }
 
         dieRoll.setRollResults(rollResults);
@@ -30,8 +31,9 @@ public class DiceRollService {
         return dieRoll;
     }
 
-    private int roll() {
-        return 1;
+    private int roll(int minValue, int maxValue) {
+        SecureRandom random = new SecureRandom();
+        return random.nextInt((maxValue - minValue) + 1) + minValue;
     }
 
     private void gatherRollStats(DieRoll dieRoll) {
