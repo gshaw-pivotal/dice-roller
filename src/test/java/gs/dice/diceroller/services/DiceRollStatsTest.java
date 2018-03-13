@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -173,5 +175,74 @@ public class DiceRollStatsTest {
         float minRoll = diceRollStats.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(4.5F));
+    }
+
+    @Test
+    public void givenAListOfRollResults_forADieOf3Sides_thenASummationListOfLengthMatchingTheNumberOfPossibleValuesIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(1);
+        rolls.add(2);
+        rolls.add(3);
+
+        int dieType = 3;
+
+        Map summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+
+        assertThat(summationOfPossibleRollValues.size(), equalTo(dieType));
+    }
+
+    @Test
+    public void givenAListOfRollResults_forADieOf3Sides_thenASummationListContainingOnlyKeysThatCanComeFromTheDieTypeIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(1);
+        rolls.add(2);
+        rolls.add(3);
+
+        int dieType = 3;
+
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+
+
+        Map<Integer, Integer> invalidKeys = summationOfPossibleRollValues.entrySet()
+                .stream()
+                .filter(k -> k.getKey() > dieType)
+                .collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
+
+        assertThat(invalidKeys.size(), equalTo(0));
+
+    }
+
+    @Test
+    public void givenAListOfRollResultsThatAreAllOneValue_thenASummationListContainingOnlyOneKeyWithANonZeroValueIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(1);
+        rolls.add(1);
+        rolls.add(1);
+
+        int dieType = 3;
+
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+
+
+        assertThat(summationOfPossibleRollValues.get(1), equalTo(3));
+        assertThat(summationOfPossibleRollValues.get(2), equalTo(0));
+        assertThat(summationOfPossibleRollValues.get(3), equalTo(0));
+    }
+
+    @Test
+    public void givenAListOfRollResultsThatAreMoreThanOneValue_thenASummationListDetailingTheOccurrenceOfEachRollValueIsReturned() {
+        List<Integer> rolls = new ArrayList();
+        rolls.add(1);
+        rolls.add(2);
+        rolls.add(3);
+
+        int dieType = 3;
+
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+
+
+        assertThat(summationOfPossibleRollValues.get(1), equalTo(1));
+        assertThat(summationOfPossibleRollValues.get(2), equalTo(1));
+        assertThat(summationOfPossibleRollValues.get(3), equalTo(1));
     }
 }

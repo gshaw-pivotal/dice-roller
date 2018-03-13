@@ -2,9 +2,7 @@ package gs.dice.diceroller.services;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class DiceRollStats {
@@ -39,5 +37,17 @@ public class DiceRollStats {
             int medianIndex = sortedRolls.size() / 2;
             return sortedRolls.get(medianIndex);
         }
+    }
+
+    public Map<Integer, Integer> rollValueOccurrence(List<Integer> rolls, int dieType) {
+        Map<Integer, Integer> rollValueSummation = new HashMap();
+
+        for (int count = 1; count <= dieType; count++) {
+            rollValueSummation.put(count, 0);
+        }
+
+        rolls.forEach(roll -> rollValueSummation.put(roll, (rollValueSummation.get(roll) + 1)));
+
+        return rollValueSummation;
     }
 }
