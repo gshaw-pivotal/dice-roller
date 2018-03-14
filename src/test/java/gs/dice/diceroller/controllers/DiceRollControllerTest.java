@@ -15,7 +15,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -192,12 +194,17 @@ public class DiceRollControllerTest {
     }
 
     private DieRoll setRollStat(DieRoll dieRoll) {
+        Map<Integer, Integer> rollValueOccurrence = new HashMap();
+        rollValueOccurrence.put(1, 1);
+        rollValueOccurrence.put(1, 2);
+
         DieRollStats stats = DieRollStats.builder()
                 .mean(1F)
                 .sum(2)
                 .median(1.5F)
                 .max(3)
                 .min(1)
+                .rollValueOccurrence(rollValueOccurrence)
                 .build();
         dieRoll.setDieRollStats(stats);
         return dieRoll;

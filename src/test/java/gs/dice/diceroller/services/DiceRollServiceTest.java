@@ -8,9 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +65,7 @@ public class DiceRollServiceTest {
         when(diceRollStats.determineRollsMedian(any())).thenReturn(1F);
         when(diceRollStats.maxRoll(any())).thenReturn(1);
         when(diceRollStats.minRoll(any())).thenReturn(1);
+        when(diceRollStats.rollValueOccurrence(anyList(), anyInt())).thenReturn(new HashMap());
 
         dieRoll = DieRoll.builder()
                 .dieType(6)
@@ -74,18 +79,27 @@ public class DiceRollServiceTest {
         verify(diceRollStats).determineRollsMedian(any());
         verify(diceRollStats).maxRoll(any());
         verify(diceRollStats).minRoll(any());
+        verify(diceRollStats).rollValueOccurrence(anyList(), anyInt());
     }
 
     @Test
     public void givenACallToGenerateRolls_returnsTheDieRollWithStatsOnTheResultOfSaidRolls() {
+        int dieType = 6;
+
+        Map<Integer, Integer> rollValueOccurrence = new HashMap();
+        for (int count = 1; count <= dieType; count++) {
+            rollValueOccurrence.put(count, 1);
+        }
+
         when(diceRollStats.determineRollsMean(any())).thenReturn(1F);
         when(diceRollStats.determineRollsSum(any())).thenReturn(1);
         when(diceRollStats.determineRollsMedian(any())).thenReturn(1F);
         when(diceRollStats.maxRoll(any())).thenReturn(1);
         when(diceRollStats.minRoll(any())).thenReturn(1);
+        when(diceRollStats.rollValueOccurrence(anyList(), anyInt())).thenReturn(rollValueOccurrence);
 
         dieRoll = DieRoll.builder()
-                .dieType(6)
+                .dieType(dieType)
                 .rollCount(3)
                 .build();
 
@@ -97,5 +111,6 @@ public class DiceRollServiceTest {
         assertThat(resultingStats.getMedian(), is(notNullValue()));
         assertThat(resultingStats.getMax(), is(notNullValue()));
         assertThat(resultingStats.getMin(), is(notNullValue()));
+        assertThat(resultingStats.getRollValueOccurrence().size(), equalTo(dieType));
     }
 }

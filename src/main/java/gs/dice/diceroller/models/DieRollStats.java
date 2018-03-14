@@ -3,6 +3,8 @@ package gs.dice.diceroller.models;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
+
 @Builder
 @Data
 public class DieRollStats {
@@ -15,4 +17,6 @@ public class DieRollStats {
     private float mean;
 
     private float median;
+
+    private Map<Integer, Integer> rollValueOccurrence;
 }

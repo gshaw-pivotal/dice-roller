@@ -44,6 +44,7 @@ public class DiceRollService {
                 .median(diceRollStats.determineRollsMedian(dieRoll.getRollResults()))
                 .max(diceRollStats.maxRoll(dieRoll.getRollResults()))
                 .min(diceRollStats.minRoll(dieRoll.getRollResults()))
+                .rollValueOccurrence(diceRollStats.rollValueOccurrence(dieRoll.getRollResults(), dieRoll.getDieType()))
                 .build();
 
         dieRoll.setDieRollStats(rollStats);
