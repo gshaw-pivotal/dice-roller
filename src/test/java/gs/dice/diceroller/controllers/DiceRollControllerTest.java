@@ -49,7 +49,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 1;
 
-        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(buildDieRollObject(dieType, rollCount));
 
         mockMvc.perform(
                 post("/roll")
@@ -72,7 +73,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 1;
 
-        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(buildDieRollObject(dieType, rollCount));
 
         MvcResult result = mockMvc.perform(
                 post("/roll")
@@ -91,7 +93,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 2;
 
-        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(buildDieRollObject(dieType, rollCount));
 
         String rollResultsPattern = "\\[[\\d,\\s]*]";
 
@@ -112,7 +115,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 2;
 
-        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(buildDieRollObject(dieType, rollCount));
 
         MvcResult result = mockMvc.perform(
                 post("/roll")
@@ -130,7 +134,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 2;
 
-        when(diceRollService.generateRolls(any())).thenReturn(setRollStat(buildDieRollObject(dieType, rollCount)));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(setRollStat(buildDieRollObject(dieType, rollCount)));
 
         MvcResult result = mockMvc.perform(
                 post("/roll")
@@ -148,7 +153,8 @@ public class DiceRollControllerTest {
         int dieType = 6;
         int rollCount = 1;
 
-        when(diceRollService.generateRolls(any())).thenReturn(buildDieRollObject(dieType, rollCount));
+        when(diceRollService.generateRolls(any(DieRoll.class)))
+                .thenReturn(buildDieRollObject(dieType, rollCount));
 
         mockMvc.perform(
                 post("/roll")
@@ -156,7 +162,7 @@ public class DiceRollControllerTest {
                         .content(buildValidSingleDieRollRequestBody(dieType)))
                 .andExpect(status().isOk());
 
-        verify(diceRollService).generateRolls(any());
+        verify(diceRollService).generateRolls(any(DieRoll.class));
     }
 
     private String buildValidSingleDieRollRequestBody(int dieType) {
@@ -206,6 +212,7 @@ public class DiceRollControllerTest {
                 .min(1)
                 .rollValueOccurrence(rollValueOccurrence)
                 .build();
+
         dieRoll.setDieRollStats(stats);
         return dieRoll;
     }

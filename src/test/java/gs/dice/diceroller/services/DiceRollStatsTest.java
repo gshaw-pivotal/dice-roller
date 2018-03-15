@@ -240,7 +240,6 @@ public class DiceRollStatsTest {
 
         Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
 
-
         assertThat(summationOfPossibleRollValues.get(1), equalTo(1));
         assertThat(summationOfPossibleRollValues.get(2), equalTo(1));
         assertThat(summationOfPossibleRollValues.get(3), equalTo(1));

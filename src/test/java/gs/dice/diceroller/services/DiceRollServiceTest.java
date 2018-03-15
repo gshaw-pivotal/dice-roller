@@ -13,8 +13,8 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,13 +35,15 @@ public class DiceRollServiceTest {
 
     @Test
     public void givenADieRollForOneRoll_returnsTheDieRollWithResultingSingleRoll() {
+        int numberOfRolls = 1;
+
         dieRoll = DieRoll.builder()
                 .dieType(6)
-                .rollCount(1)
+                .rollCount(numberOfRolls)
                 .build();
 
         DieRoll resultingDieRoll = diceRollService.generateRolls(dieRoll);
-        assertThat(resultingDieRoll.getRollResults().size(), equalTo(1));
+        assertThat(resultingDieRoll.getRollResults().size(), equalTo(numberOfRolls));
     }
 
     @Test
@@ -59,27 +61,28 @@ public class DiceRollServiceTest {
 
     @Test
     public void givenACallToGenerateRolls_callsTheStatsService() {
+        int dieType = 6;
 
-        when(diceRollStats.determineRollsMean(any())).thenReturn(1F);
-        when(diceRollStats.determineRollsSum(any())).thenReturn(1);
-        when(diceRollStats.determineRollsMedian(any())).thenReturn(1F);
-        when(diceRollStats.maxRoll(any())).thenReturn(1);
-        when(diceRollStats.minRoll(any())).thenReturn(1);
-        when(diceRollStats.rollValueOccurrence(anyList(), anyInt())).thenReturn(new HashMap());
+        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStats.minRoll(anyList())).thenReturn(1);
+        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(new HashMap());
 
         dieRoll = DieRoll.builder()
-                .dieType(6)
+                .dieType(dieType)
                 .rollCount(1)
                 .build();
 
         diceRollService.generateRolls(dieRoll);
 
-        verify(diceRollStats).determineRollsMean(any());
-        verify(diceRollStats).determineRollsSum(any());
-        verify(diceRollStats).determineRollsMedian(any());
-        verify(diceRollStats).maxRoll(any());
-        verify(diceRollStats).minRoll(any());
-        verify(diceRollStats).rollValueOccurrence(anyList(), anyInt());
+        verify(diceRollStats).determineRollsMean(anyList());
+        verify(diceRollStats).determineRollsSum(anyList());
+        verify(diceRollStats).determineRollsMedian(anyList());
+        verify(diceRollStats).maxRoll(anyList());
+        verify(diceRollStats).minRoll(anyList());
+        verify(diceRollStats).rollValueOccurrence(anyList(), eq(dieType));
     }
 
     @Test
@@ -91,12 +94,12 @@ public class DiceRollServiceTest {
             rollValueOccurrence.put(count, 1);
         }
 
-        when(diceRollStats.determineRollsMean(any())).thenReturn(1F);
-        when(diceRollStats.determineRollsSum(any())).thenReturn(1);
-        when(diceRollStats.determineRollsMedian(any())).thenReturn(1F);
-        when(diceRollStats.maxRoll(any())).thenReturn(1);
-        when(diceRollStats.minRoll(any())).thenReturn(1);
-        when(diceRollStats.rollValueOccurrence(anyList(), anyInt())).thenReturn(rollValueOccurrence);
+        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStats.minRoll(anyList())).thenReturn(1);
+        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(rollValueOccurrence);
 
         dieRoll = DieRoll.builder()
                 .dieType(dieType)
