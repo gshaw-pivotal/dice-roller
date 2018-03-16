@@ -55,7 +55,7 @@ public class DiceRollControllerTest {
         mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidSingleDieRollRequestBody(dieType)))
+                        .content(buildValidSingleDieTypeSingleRollRequestBody(dieType)))
                 .andExpect(status().isOk());
     }
 
@@ -64,7 +64,7 @@ public class DiceRollControllerTest {
         mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildInvalidSingleDieRollRequestBody()))
+                        .content(buildInvalidSingleRollRequestBody()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -79,7 +79,7 @@ public class DiceRollControllerTest {
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidSingleDieRollRequestBody(dieType)))
+                        .content(buildValidSingleDieTypeSingleRollRequestBody(dieType)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -101,7 +101,7 @@ public class DiceRollControllerTest {
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
+                        .content(buildValidSingleDieTypeMultiRollRequestBody(dieType, rollCount)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -121,7 +121,7 @@ public class DiceRollControllerTest {
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
+                        .content(buildValidSingleDieTypeMultiRollRequestBody(dieType, rollCount)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -130,7 +130,7 @@ public class DiceRollControllerTest {
     }
 
     @Test
-    public void post_receivesAValidRequestForASignleDieType_returnsAResponseThatContainsTheStats() throws Exception {
+    public void post_receivesAValidRequestForASingleDieType_returnsAResponseThatContainsTheStats() throws Exception {
         int dieType = 6;
         int rollCount = 2;
 
@@ -140,7 +140,7 @@ public class DiceRollControllerTest {
         MvcResult result = mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidMultiDieRollRequestBody(dieType, rollCount)))
+                        .content(buildValidSingleDieTypeMultiRollRequestBody(dieType, rollCount)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -159,27 +159,27 @@ public class DiceRollControllerTest {
         mockMvc.perform(
                 post("/roll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(buildValidSingleDieRollRequestBody(dieType)))
+                        .content(buildValidSingleDieTypeSingleRollRequestBody(dieType)))
                 .andExpect(status().isOk());
 
         verify(diceRollService).generateRolls(any(DieRoll.class));
     }
 
-    private String buildValidSingleDieRollRequestBody(int dieType) {
+    private String buildValidSingleDieTypeSingleRollRequestBody(int dieType) {
         return "{" +
                 "\"dieType\": " + dieType + "," +
                 "\"rollCount\": 1" +
                 "}";
     }
 
-    private String buildValidMultiDieRollRequestBody(int dieType, int rollCount) {
+    private String buildValidSingleDieTypeMultiRollRequestBody(int dieType, int rollCount) {
         return "{" +
                 "\"dieType\": " + dieType + "," +
                 "\"rollCount\": " + rollCount +
                 "}";
     }
 
-    private String buildInvalidSingleDieRollRequestBody() {
+    private String buildInvalidSingleRollRequestBody() {
         return "{" +
                 "\"rollCount\": 1" +
                 "}";
