@@ -34,7 +34,7 @@ public class DiceRollServiceTest {
     }
 
     @Test
-    public void givenADieRollForOneRoll_returnsTheDieRollWithResultingSingleRoll() {
+    public void givenASingleDieTypeForOneRoll_returnsTheDieRollWithResultingSingleRoll() {
         int numberOfRolls = 1;
 
         dieRoll = DieRoll.builder()
@@ -47,7 +47,7 @@ public class DiceRollServiceTest {
     }
 
     @Test
-    public void givenADieRollForMoreThanOneRoll_returnsTheDieRollWithTheMatchingNumberOfRolls() {
+    public void givenASingleDieTypeForMoreThanOneRoll_returnsTheDieRollWithTheMatchingNumberOfRolls() {
         int numberOfRolls = 4;
 
         dieRoll = DieRoll.builder()
@@ -60,7 +60,7 @@ public class DiceRollServiceTest {
     }
 
     @Test
-    public void givenACallToGenerateRolls_callsTheStatsService() {
+    public void givenASingleDieTypeToGenerateRolls_callsTheStatsService() {
         int dieType = 6;
 
         when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
@@ -86,7 +86,7 @@ public class DiceRollServiceTest {
     }
 
     @Test
-    public void givenACallToGenerateRolls_returnsTheDieRollWithStatsOnTheResultOfSaidRolls() {
+    public void givenASingleDieTypeToGenerateRolls_returnsTheDieRollWithStatsOnTheResultOfSaidRolls() {
         int dieType = 6;
 
         Map<Integer, Integer> rollValueOccurrence = new HashMap();
