@@ -8,7 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
@@ -115,5 +117,51 @@ public class DiceRollServiceTest {
         assertThat(resultingStats.getMax(), is(notNullValue()));
         assertThat(resultingStats.getMin(), is(notNullValue()));
         assertThat(resultingStats.getRollValueOccurrence().size(), equalTo(dieType));
+    }
+
+    @Test
+    public void givenMultipleDieTypesToGenerateRolls_returnsAListWithTheSameNumberOfDieTypes() {
+
+        List<DieRoll> request = buildListOfDieRoll(3, 4);
+
+        List<DieRoll> results = diceRollService.generateRolls(request);
+        assertThat(results.size(), equalTo(request.size()));
+    }
+
+    @Test
+    public void givenMultipleDieTypesToGenerateRolls_returnsAListWithResultingRolls() {
+        int numberOfRolls = 4;
+
+        List<DieRoll> request = buildListOfDieRoll(3, numberOfRolls);
+
+        List<DieRoll> results = diceRollService.generateRolls(request);
+        assertThat(results.get(0).getRollResults().size(), equalTo(numberOfRolls));
+    }
+
+    private List<DieRoll> buildListOfDieRoll(int dieType, int numberOfRolls) {
+        List<DieRoll> dieRollRequestList = new ArrayList();
+
+        dieRoll = DieRoll.builder()
+                .dieType(dieType)
+                .rollCount(numberOfRolls)
+                .build();
+
+        dieRollRequestList.add(dieRoll);
+
+        dieRoll = DieRoll.builder()
+                .dieType(dieType)
+                .rollCount(numberOfRolls)
+                .build();
+
+        dieRollRequestList.add(dieRoll);
+
+        dieRoll = DieRoll.builder()
+                .dieType(dieType)
+                .rollCount(numberOfRolls)
+                .build();
+
+        dieRollRequestList.add(dieRoll);
+
+        return dieRollRequestList;
     }
 }

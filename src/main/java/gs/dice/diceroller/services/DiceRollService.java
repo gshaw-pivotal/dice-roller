@@ -31,6 +31,14 @@ public class DiceRollService {
         return dieRoll;
     }
 
+    public List<DieRoll> generateRolls(List<DieRoll> dieRollRequestList) {
+        for (int count = 0; count < dieRollRequestList.size(); count++) {
+            dieRollRequestList.set(count, generateRolls(dieRollRequestList.get(count)));
+        }
+
+        return dieRollRequestList;
+    }
+
     private int roll(int minValue, int maxValue) {
         SecureRandom random = new SecureRandom();
         return random.nextInt((maxValue - minValue) + 1) + minValue;
