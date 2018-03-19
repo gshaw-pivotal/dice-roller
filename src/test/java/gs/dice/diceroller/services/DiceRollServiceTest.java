@@ -121,46 +121,47 @@ public class DiceRollServiceTest {
 
     @Test
     public void givenMultipleDieTypesToGenerateRolls_returnsAListWithTheSameNumberOfDieTypes() {
+        int numberOfDieType = 3;
+        int numberOfRolls = 4;
+        List<Integer> dieTypeList = new ArrayList();
+        dieTypeList.add(3);
+        dieTypeList.add(4);
+        dieTypeList.add(5);
 
-        List<DieRoll> request = buildListOfDieRoll(3, 4);
+        List<DieRoll> request = buildListOfDieRoll(numberOfDieType, dieTypeList, numberOfRolls);
 
         List<DieRoll> results = diceRollService.generateRolls(request);
-        assertThat(results.size(), equalTo(request.size()));
+        assertThat(results.size(), equalTo(numberOfDieType));
     }
 
     @Test
     public void givenMultipleDieTypesToGenerateRolls_returnsAListWithResultingRolls() {
+        int numberOfDieType = 3;
         int numberOfRolls = 4;
+        List<Integer> dieTypeList = new ArrayList();
+        dieTypeList.add(3);
+        dieTypeList.add(4);
+        dieTypeList.add(5);
 
-        List<DieRoll> request = buildListOfDieRoll(3, numberOfRolls);
+        List<DieRoll> request = buildListOfDieRoll(numberOfDieType, dieTypeList, numberOfRolls);
 
         List<DieRoll> results = diceRollService.generateRolls(request);
         assertThat(results.get(0).getRollResults().size(), equalTo(numberOfRolls));
+        assertThat(results.get(1).getRollResults().size(), equalTo(numberOfRolls));
+        assertThat(results.get(2).getRollResults().size(), equalTo(numberOfRolls));
     }
 
-    private List<DieRoll> buildListOfDieRoll(int dieType, int numberOfRolls) {
+    private List<DieRoll> buildListOfDieRoll(int numberOfDieType, List<Integer>dieType, int numberOfRolls) {
         List<DieRoll> dieRollRequestList = new ArrayList();
 
-        dieRoll = DieRoll.builder()
-                .dieType(dieType)
-                .rollCount(numberOfRolls)
-                .build();
+        for (int count = 0; count < numberOfDieType; count++) {
+            dieRoll = DieRoll.builder()
+                    .dieType(dieType.get(count))
+                    .rollCount(numberOfRolls)
+                    .build();
 
-        dieRollRequestList.add(dieRoll);
-
-        dieRoll = DieRoll.builder()
-                .dieType(dieType)
-                .rollCount(numberOfRolls)
-                .build();
-
-        dieRollRequestList.add(dieRoll);
-
-        dieRoll = DieRoll.builder()
-                .dieType(dieType)
-                .rollCount(numberOfRolls)
-                .build();
-
-        dieRollRequestList.add(dieRoll);
+            dieRollRequestList.add(dieRoll);
+        }
 
         return dieRollRequestList;
     }
