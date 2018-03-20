@@ -146,9 +146,46 @@ public class DiceRollServiceTest {
         List<DieRoll> request = buildListOfDieRoll(numberOfDieType, dieTypeList, numberOfRolls);
 
         List<DieRoll> results = diceRollService.generateRolls(request);
-        assertThat(results.get(0).getRollResults().size(), equalTo(numberOfRolls));
-        assertThat(results.get(1).getRollResults().size(), equalTo(numberOfRolls));
-        assertThat(results.get(2).getRollResults().size(), equalTo(numberOfRolls));
+        for (int count = 0; count < numberOfDieType; count++) {
+            assertThat(results.get(count).getRollResults().size(), equalTo(numberOfRolls));
+        }
+    }
+
+    @Test
+    public void givenMultipleDieTypesToGenerateRolls_returnsAListWithStats() {
+        int numberOfDieType = 3;
+        int numberOfRolls = 4;
+        List<Integer> dieTypeList = new ArrayList();
+        dieTypeList.add(3);
+        dieTypeList.add(4);
+        dieTypeList.add(5);
+
+        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStats.minRoll(anyList())).thenReturn(1);
+
+        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(0)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(0)));
+        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(1)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(1)));
+        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(2)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(2)));
+
+
+
+        List<DieRoll> request = buildListOfDieRoll(numberOfDieType, dieTypeList, numberOfRolls);
+
+        List<DieRoll> results = diceRollService.generateRolls(request);
+
+        for (int count = 0; count < numberOfDieType; count++) {
+            DieRollStats resultingStats = results.get(count).getDieRollStats();
+
+            assertThat(resultingStats.getMean(), is(notNullValue()));
+            assertThat(resultingStats.getSum(), is(notNullValue()));
+            assertThat(resultingStats.getMedian(), is(notNullValue()));
+            assertThat(resultingStats.getMax(), is(notNullValue()));
+            assertThat(resultingStats.getMin(), is(notNullValue()));
+            assertThat(resultingStats.getRollValueOccurrence().size(), equalTo(dieTypeList.get(count)));
+        }
     }
 
     private List<DieRoll> buildListOfDieRoll(int numberOfDieType, List<Integer>dieType, int numberOfRolls) {
@@ -164,5 +201,15 @@ public class DiceRollServiceTest {
         }
 
         return dieRollRequestList;
+    }
+
+    private Map<Integer, Integer> buildRollValueOccurrenceMap(int dieType) {
+        Map<Integer, Integer> rollValueOccurrence = new HashMap();
+
+        for (int count = 0; count < dieType; count++) {
+            rollValueOccurrence.put(count + 1, 1);
+        }
+
+        return rollValueOccurrence;
     }
 }
