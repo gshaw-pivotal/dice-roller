@@ -14,15 +14,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -149,6 +147,52 @@ public class DiceRollControllerTest {
     }
 
     @Test
+    public void post_receivesAValidaRequestForASingleRollOfMultipleDieTypes_returnsSuccessfulResponseStatus() throws Exception {
+        List<Integer> dieTypesRequest = Arrays.asList(4, 5, 6);
+
+        List<DieRoll> dieRolls = Arrays.asList(
+                setRollStat(buildDieRollObject(4, 1)),
+                setRollStat(buildDieRollObject(5, 1)),
+                setRollStat(buildDieRollObject(6, 1)));
+
+        when(diceRollService.generateRolls(anyList()))
+                .thenReturn(dieRolls);
+
+        String request = buildValidMultiDieTypeSingleRollRequestBody(dieTypesRequest);
+
+        MvcResult result = mockMvc.perform(
+                post("/roll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    public void post_receivesAValidaRequestForASingleRollOfMultipleDieTypes_returnsAListOfDiesOfTheCorrectSize() throws Exception {
+        List<Integer> dieTypesRequest = Arrays.asList(4, 5, 6);
+
+        List<DieRoll> dieRolls = Arrays.asList(
+                setRollStat(buildDieRollObject(4, 1)),
+                setRollStat(buildDieRollObject(5, 1)),
+                setRollStat(buildDieRollObject(6, 1)));
+
+        when(diceRollService.generateRolls(anyList()))
+                .thenReturn(dieRolls);
+
+        String request = buildValidMultiDieTypeSingleRollRequestBody(dieTypesRequest);
+
+        MvcResult result = mockMvc.perform(
+                post("/roll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andReturn();
+
+        JSONObject jsonResponse = new JSONObject(result.getResponse().getContentAsString());
+        assertThat(jsonResponse.getJSONArray("dies").length(), equalTo(dieTypesRequest.size()));
+    }
+
+    @Test
     public void controllerCallsTheServiceToPerformDiceRolls() throws Exception {
         int dieType = 6;
         int rollCount = 1;
@@ -169,6 +213,25 @@ public class DiceRollControllerTest {
         return "{" +
                 "\"dieType\": " + dieType + "," +
                 "\"rollCount\": 1" +
+                "}";
+    }
+
+    private String buildValidMultiDieTypeSingleRollRequestBody(List<Integer> dieTypes) {
+        List<String> dieRequests = new ArrayList();
+        dieTypes.forEach(die -> dieRequests.add(buildValidSingleDieTypeSingleRollRequestBody(die)));
+
+        String formattedRequests = "";
+        for (int count = 0; count < dieRequests.size() - 1; count++) {
+            formattedRequests += formattedRequests + dieRequests.get(count) + ",";
+        }
+        formattedRequests += formattedRequests + dieRequests.get(dieRequests.size() - 1);
+
+        String listOfRollRequests = "\"dies\": [" +
+                formattedRequests +
+                "]";
+
+        return "{" +
+                listOfRollRequests +
                 "}";
     }
 
