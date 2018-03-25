@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class DiceRollStatsTest {
+public class DiceRollStatCalculatorTest {
 
-    private DiceRollStats diceRollStats;
+    private DiceRollStatCalculator diceRollStatCalculator;
 
     @Before
     public void setup() {
-        diceRollStats = new DiceRollStats();
+        diceRollStatCalculator = new DiceRollStatCalculator();
     }
 
     @Test
@@ -25,7 +25,7 @@ public class DiceRollStatsTest {
         List<Integer> rolls = new ArrayList();
         rolls.add(5);
 
-        float meanOfRolls = diceRollStats.determineRollsMean(rolls);
+        float meanOfRolls = diceRollStatCalculator.determineRollsMean(rolls);
 
         assertThat(meanOfRolls, equalTo(5F));
     }
@@ -36,7 +36,7 @@ public class DiceRollStatsTest {
         rolls.add(1);
         rolls.add(3);
 
-        float meanOfRolls = diceRollStats.determineRollsMean(rolls);
+        float meanOfRolls = diceRollStatCalculator.determineRollsMean(rolls);
 
         assertThat(meanOfRolls, equalTo(2F));
     }
@@ -49,7 +49,7 @@ public class DiceRollStatsTest {
         rolls.add(5);
         rolls.add(6);
 
-        float meanOfRolls = diceRollStats.determineRollsMean(rolls);
+        float meanOfRolls = diceRollStatCalculator.determineRollsMean(rolls);
 
         assertThat(meanOfRolls, equalTo(4F));
     }
@@ -59,7 +59,7 @@ public class DiceRollStatsTest {
         List<Integer> rolls = new ArrayList();
         rolls.add(4);
 
-        int sumOfRolls = diceRollStats.determineRollsSum(rolls);
+        int sumOfRolls = diceRollStatCalculator.determineRollsSum(rolls);
 
         assertThat(sumOfRolls, equalTo(4));
     }
@@ -70,7 +70,7 @@ public class DiceRollStatsTest {
         rolls.add(2);
         rolls.add(3);
 
-        int sumOfRolls = diceRollStats.determineRollsSum(rolls);
+        int sumOfRolls = diceRollStatCalculator.determineRollsSum(rolls);
 
         assertThat(sumOfRolls, equalTo(5));
     }
@@ -80,7 +80,7 @@ public class DiceRollStatsTest {
         List<Integer> rolls = new ArrayList();
         rolls.add(6);
 
-        int maxRoll = diceRollStats.maxRoll(rolls);
+        int maxRoll = diceRollStatCalculator.maxRoll(rolls);
 
         assertThat(maxRoll, equalTo(6));
     }
@@ -91,7 +91,7 @@ public class DiceRollStatsTest {
         rolls.add(5);
         rolls.add(3);
 
-        int maxRoll = diceRollStats.maxRoll(rolls);
+        int maxRoll = diceRollStatCalculator.maxRoll(rolls);
 
         assertThat(maxRoll, equalTo(5));
     }
@@ -101,7 +101,7 @@ public class DiceRollStatsTest {
         List<Integer> rolls = new ArrayList();
         rolls.add(2);
 
-        int minRoll = diceRollStats.minRoll(rolls);
+        int minRoll = diceRollStatCalculator.minRoll(rolls);
 
         assertThat(minRoll, equalTo(2));
     }
@@ -112,7 +112,7 @@ public class DiceRollStatsTest {
         rolls.add(4);
         rolls.add(2);
 
-        int minRoll = diceRollStats.minRoll(rolls);
+        int minRoll = diceRollStatCalculator.minRoll(rolls);
 
         assertThat(minRoll, equalTo(2));
     }
@@ -122,7 +122,7 @@ public class DiceRollStatsTest {
         List<Integer> rolls = new ArrayList();
         rolls.add(3);
 
-        float minRoll = diceRollStats.determineRollsMedian(rolls);
+        float minRoll = diceRollStatCalculator.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(3F));
     }
@@ -134,7 +134,7 @@ public class DiceRollStatsTest {
         rolls.add(5);
         rolls.add(6);
 
-        float minRoll = diceRollStats.determineRollsMedian(rolls);
+        float minRoll = diceRollStatCalculator.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(5F));
     }
@@ -147,7 +147,7 @@ public class DiceRollStatsTest {
         rolls.add(5);
         rolls.add(6);
 
-        float minRoll = diceRollStats.determineRollsMedian(rolls);
+        float minRoll = diceRollStatCalculator.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(4.5F));
     }
@@ -159,7 +159,7 @@ public class DiceRollStatsTest {
         rolls.add(6);
         rolls.add(3);
 
-        float minRoll = diceRollStats.determineRollsMedian(rolls);
+        float minRoll = diceRollStatCalculator.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(5F));
     }
@@ -172,7 +172,7 @@ public class DiceRollStatsTest {
         rolls.add(3);
         rolls.add(5);
 
-        float minRoll = diceRollStats.determineRollsMedian(rolls);
+        float minRoll = diceRollStatCalculator.determineRollsMedian(rolls);
 
         assertThat(minRoll, equalTo(4.5F));
     }
@@ -186,7 +186,7 @@ public class DiceRollStatsTest {
 
         int dieType = 3;
 
-        Map summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+        Map summationOfPossibleRollValues = diceRollStatCalculator.rollValueOccurrence(rolls, dieType);
 
         assertThat(summationOfPossibleRollValues.size(), equalTo(dieType));
     }
@@ -200,7 +200,7 @@ public class DiceRollStatsTest {
 
         int dieType = 3;
 
-        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStatCalculator.rollValueOccurrence(rolls, dieType);
 
 
         Map<Integer, Integer> invalidKeys = summationOfPossibleRollValues.entrySet()
@@ -221,7 +221,7 @@ public class DiceRollStatsTest {
 
         int dieType = 3;
 
-        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStatCalculator.rollValueOccurrence(rolls, dieType);
 
 
         assertThat(summationOfPossibleRollValues.get(1), equalTo(3));
@@ -238,7 +238,7 @@ public class DiceRollStatsTest {
 
         int dieType = 3;
 
-        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStats.rollValueOccurrence(rolls, dieType);
+        Map<Integer, Integer> summationOfPossibleRollValues = diceRollStatCalculator.rollValueOccurrence(rolls, dieType);
 
         assertThat(summationOfPossibleRollValues.get(1), equalTo(1));
         assertThat(summationOfPossibleRollValues.get(2), equalTo(1));

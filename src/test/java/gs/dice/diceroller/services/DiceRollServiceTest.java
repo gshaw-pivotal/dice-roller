@@ -25,7 +25,7 @@ public class DiceRollServiceTest {
     private DieRoll dieRoll;
 
     @Mock
-    private DiceRollStats diceRollStats;
+    private DiceRollStatCalculator diceRollStatCalculator;
 
     @InjectMocks
     private DiceRollService diceRollService;
@@ -65,12 +65,12 @@ public class DiceRollServiceTest {
     public void givenASingleDieTypeToGenerateRolls_callsTheStatsService() {
         int dieType = 6;
 
-        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
-        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
-        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
-        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
-        when(diceRollStats.minRoll(anyList())).thenReturn(1);
-        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(new HashMap());
+        when(diceRollStatCalculator.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.minRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(new HashMap());
 
         dieRoll = DieRoll.builder()
                 .dieType(dieType)
@@ -79,12 +79,12 @@ public class DiceRollServiceTest {
 
         diceRollService.generateRolls(dieRoll);
 
-        verify(diceRollStats).determineRollsMean(anyList());
-        verify(diceRollStats).determineRollsSum(anyList());
-        verify(diceRollStats).determineRollsMedian(anyList());
-        verify(diceRollStats).maxRoll(anyList());
-        verify(diceRollStats).minRoll(anyList());
-        verify(diceRollStats).rollValueOccurrence(anyList(), eq(dieType));
+        verify(diceRollStatCalculator).determineRollsMean(anyList());
+        verify(diceRollStatCalculator).determineRollsSum(anyList());
+        verify(diceRollStatCalculator).determineRollsMedian(anyList());
+        verify(diceRollStatCalculator).maxRoll(anyList());
+        verify(diceRollStatCalculator).minRoll(anyList());
+        verify(diceRollStatCalculator).rollValueOccurrence(anyList(), eq(dieType));
     }
 
     @Test
@@ -96,12 +96,12 @@ public class DiceRollServiceTest {
             rollValueOccurrence.put(count, 1);
         }
 
-        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
-        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
-        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
-        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
-        when(diceRollStats.minRoll(anyList())).thenReturn(1);
-        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(rollValueOccurrence);
+        when(diceRollStatCalculator.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.minRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.rollValueOccurrence(anyList(), eq(dieType))).thenReturn(rollValueOccurrence);
 
         dieRoll = DieRoll.builder()
                 .dieType(dieType)
@@ -160,15 +160,15 @@ public class DiceRollServiceTest {
         dieTypeList.add(4);
         dieTypeList.add(5);
 
-        when(diceRollStats.determineRollsMean(anyList())).thenReturn(1F);
-        when(diceRollStats.determineRollsSum(anyList())).thenReturn(1);
-        when(diceRollStats.determineRollsMedian(anyList())).thenReturn(1F);
-        when(diceRollStats.maxRoll(anyList())).thenReturn(1);
-        when(diceRollStats.minRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.determineRollsMean(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.determineRollsSum(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.determineRollsMedian(anyList())).thenReturn(1F);
+        when(diceRollStatCalculator.maxRoll(anyList())).thenReturn(1);
+        when(diceRollStatCalculator.minRoll(anyList())).thenReturn(1);
 
-        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(0)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(0)));
-        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(1)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(1)));
-        when(diceRollStats.rollValueOccurrence(anyList(), eq(dieTypeList.get(2)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(2)));
+        when(diceRollStatCalculator.rollValueOccurrence(anyList(), eq(dieTypeList.get(0)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(0)));
+        when(diceRollStatCalculator.rollValueOccurrence(anyList(), eq(dieTypeList.get(1)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(1)));
+        when(diceRollStatCalculator.rollValueOccurrence(anyList(), eq(dieTypeList.get(2)))).thenReturn(buildRollValueOccurrenceMap(dieTypeList.get(2)));
 
 
 

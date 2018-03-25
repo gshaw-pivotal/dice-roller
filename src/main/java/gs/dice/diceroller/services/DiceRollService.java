@@ -13,7 +13,7 @@ import java.util.List;
 public class DiceRollService {
 
     @Autowired
-    private DiceRollStats diceRollStats;
+    private DiceRollStatCalculator diceRollStatCalculator;
 
     public DieRoll generateRolls(DieRoll dieRoll) {
         int numberOfRolls = dieRoll.getRollCount();
@@ -47,12 +47,12 @@ public class DiceRollService {
     private void gatherRollStats(DieRoll dieRoll) {
 
         DieRollStats rollStats = DieRollStats.builder()
-                .mean(diceRollStats.determineRollsMean(dieRoll.getRollResults()))
-                .sum(diceRollStats.determineRollsSum(dieRoll.getRollResults()))
-                .median(diceRollStats.determineRollsMedian(dieRoll.getRollResults()))
-                .max(diceRollStats.maxRoll(dieRoll.getRollResults()))
-                .min(diceRollStats.minRoll(dieRoll.getRollResults()))
-                .rollValueOccurrence(diceRollStats.rollValueOccurrence(dieRoll.getRollResults(), dieRoll.getDieType()))
+                .mean(diceRollStatCalculator.determineRollsMean(dieRoll.getRollResults()))
+                .sum(diceRollStatCalculator.determineRollsSum(dieRoll.getRollResults()))
+                .median(diceRollStatCalculator.determineRollsMedian(dieRoll.getRollResults()))
+                .max(diceRollStatCalculator.maxRoll(dieRoll.getRollResults()))
+                .min(diceRollStatCalculator.minRoll(dieRoll.getRollResults()))
+                .rollValueOccurrence(diceRollStatCalculator.rollValueOccurrence(dieRoll.getRollResults(), dieRoll.getDieType()))
                 .build();
 
         dieRoll.setDieRollStats(rollStats);

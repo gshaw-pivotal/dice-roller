@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class DiceRollStats {
+public class DiceRollStatCalculator {
     public float determineRollsMean(List<Integer> rolls) {
 
         int numberOfRolls = rolls.size();
