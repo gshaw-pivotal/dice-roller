@@ -1,0 +1,7 @@
+---
+applications:
+- name: dieroller
+  memory: 384M
+  buildpack: java_buildpack
+  instances: 1
+  path: target/dice-roller-0.0.1-SNAPSHOT.jar
