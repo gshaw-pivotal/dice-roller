@@ -26,30 +26,36 @@ public class DiceRollController {
     @Autowired
     private DiceRollService diceRollService;
 
-    @RequestMapping(value = "/roll", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/roll",
+            method = RequestMethod.POST,
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> rollDiceRequest(@Valid @RequestBody JsonNode request) {
         if (request.has("dies") && request.get("dies").isArray()) {
             try {
                 List<DieRoll> processedDieRolls = diceRollService.generateRolls(convertJsonToPojoList(request));
-                return new ResponseEntity(
+                return buildResponse(
                         "{\"dies\": " + convertListToJson(processedDieRolls) + "}",
                         HttpStatus.OK);
             }
             catch (IOException e) {
-                return new ResponseEntity(
+                return buildResponse(
                         "Invalid request body for a multiple die type roll request",
                         HttpStatus.BAD_REQUEST);
             }
         } else {
             try {
                 DieRoll processedDieRoll = diceRollService.generateRolls(convertJsonToPojo(request));
-                return new ResponseEntity(processedDieRoll, HttpStatus.OK);
+                return buildResponse(processedDieRoll, HttpStatus.OK);
             } catch (IOException e) {
-                return new ResponseEntity(
-                        "Invalid request body for a single die type roll request",
+                return buildResponse("Invalid request body for a single die type roll request",
                         HttpStatus.BAD_REQUEST);
             }
         }
+    }
+
+    private ResponseEntity<Object> buildResponse(Object body, HttpStatus status) {
+        return new ResponseEntity(body, status);
     }
 
     private List<DieRoll> convertJsonToPojoList(JsonNode jsonNode) throws IOException {
